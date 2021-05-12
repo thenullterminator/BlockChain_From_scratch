@@ -107,15 +107,16 @@ const calculateHash = (index: number, previousHash: string, timestamp: number, d
     CryptoJS.SHA256(index + previousHash + timestamp + data + difficulty + nonce).toString();
 
 
-
-
-//////////////// Validation of structure.
-
 const addBlock = (newBlock: Block) => {
     if (isValidNewBlock(newBlock, getLatestBlock())) {
         blockchain.push(newBlock);
     }
 };
+
+
+//////////////// Validation of structure.
+
+
 
 const isValidBlockStructure = (block: Block): boolean => {
     return typeof block.index === 'number'
@@ -149,8 +150,6 @@ const isValidTimestamp = (newBlock: Block, previousBlock: Block): boolean => {
     return ( previousBlock.timestamp - 60 < newBlock.timestamp )
         && newBlock.timestamp - 60 < getCurrentTimestamp();
 };
-
-
 
 const hasValidHash = (block: Block): boolean => {
 
