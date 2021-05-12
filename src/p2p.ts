@@ -16,8 +16,14 @@ class Message {
 }
 
 const initP2PServer = (p2pPort: number) => {
+    
     const server: Server = new WebSocket.Server({port: p2pPort});
-    server.on('connection', (ws: WebSocket) => {
+
+    server.on('connection', (ws: WebSocket,req) => {// client ws
+        
+        // console.log("On Connection:??? ")
+        // console.log(ws)
+        // console.log(req.socket.remotePort)
         initConnection(ws);
     });
     console.log('listening websocket p2p port on: ' + p2pPort);
@@ -100,14 +106,17 @@ const handleBlockchainResponse = (receivedBlocks: Block[]) => {
         return;
     }
     const latestBlockReceived: Block = receivedBlocks[receivedBlocks.length - 1];
+
     if (!isValidBlockStructure(latestBlockReceived)) {
         console.log('block structuture not valid');
         return;
     }
     const latestBlockHeld: Block = getLatestBlock();
+
     if (latestBlockReceived.index > latestBlockHeld.index) {
         console.log('blockchain possibly behind. We got: '
             + latestBlockHeld.index + ' Peer got: ' + latestBlockReceived.index);
+
         if (latestBlockHeld.hash === latestBlockReceived.previousHash) {
             if (addBlockToChain(latestBlockReceived)) {
                 broadcast(responseLatestMsg());
@@ -131,6 +140,9 @@ const broadcastLatest = (): void => {
 const connectToPeers = (newPeer: string): void => {
     const ws: WebSocket = new WebSocket(newPeer);
     ws.on('open', () => {
+        // console.log("Peer Connection")
+        // console.log(getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort));
+        // console.log(ws)
         initConnection(ws);
     });
     ws.on('error', () => {

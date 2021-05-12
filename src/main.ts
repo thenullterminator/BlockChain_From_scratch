@@ -24,6 +24,7 @@ app.post('/mineBlock', (req:Request, res:Response) => {
 
 app.get('/peers', (req:Request, res:Response) => {
 
+    // console.log(getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort));
     res.send(getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort));
 });
 
